@@ -1,6 +1,7 @@
 package com.nyuczka.coursecatalogservice.controller
 
 import com.nyuczka.coursecatalogservice.dto.CourseDTO
+import com.nyuczka.coursecatalogservice.entity.Course
 import com.nyuczka.coursecatalogservice.repository.CourseRepository
 import com.nyuczka.coursecatalogservice.util.courseEntityList
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -56,5 +57,27 @@ class CourseControllerIT {
 
         println(coursesDTOs)
         assertEquals(3, coursesDTOs!!.size)
+    }
+
+    @Test
+    fun `should update the course`() {
+        val course = Course(
+            null,
+            "Wiremock for Java Developers", "Development",
+        )
+
+        val savedCourse = courseRepository.save(course)
+
+        val courseDTO = CourseDTO(null, "Wiremock for Java Developers", "Testing")
+
+        webTestClient.put()
+            .uri("/v1/courses/${savedCourse.id}")
+            .bodyValue(courseDTO)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.name").isEqualTo("Wiremock for Java Developers")
+            .jsonPath("$.category").isEqualTo("Testing")
+
     }
 }
