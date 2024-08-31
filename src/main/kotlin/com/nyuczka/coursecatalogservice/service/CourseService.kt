@@ -64,4 +64,14 @@ class CourseService(val courseRepository: CourseRepository) {
         }
 
     }
+
+    fun deleteCourse(id: Int) {
+        val entity = courseRepository.findById(id)
+
+        if (entity.isPresent) {
+            courseRepository.delete(entity.get())
+        } else {
+            throw CourseNotFoundException("Course not found")
+        }
+    }
 }
