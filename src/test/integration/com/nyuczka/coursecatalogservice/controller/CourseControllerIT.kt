@@ -80,4 +80,17 @@ class CourseControllerIT {
             .jsonPath("$.category").isEqualTo("Testing")
 
     }
+
+    @Test
+    fun `should delete a course`() {
+        webTestClient.delete()
+            .uri("/v1/courses/1")
+            .exchange()
+            .expectStatus().isNoContent
+
+        val existingCourses = courseRepository.findAll()
+
+        assertEquals(existingCourses.count(), 2)
+
+    }
 }
