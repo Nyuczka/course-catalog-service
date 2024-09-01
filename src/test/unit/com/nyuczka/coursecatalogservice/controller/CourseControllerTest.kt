@@ -65,6 +65,20 @@ class CourseControllerTest {
     }
 
     @Test
+    fun `should handle runtime exception`() {
+
+        every { courseService.createCourse(any()) } throws RuntimeException("Unexpected error")
+
+        val response = mockMvc.perform(
+            post("/v1/courses", courseDTO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(courseDTO))
+        )
+
+        response.andExpect(status().isInternalServerError)
+    }
+
+    @Test
     fun `should get list of courses`() {
         every { courseService.getAllCourses() } returns listOf(courseDTO)
 
