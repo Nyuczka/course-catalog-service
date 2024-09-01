@@ -74,4 +74,18 @@ class CourseService(val courseRepository: CourseRepository) {
             throw CourseNotFoundException("Course not found")
         }
     }
+
+    fun getCoursesByName(name: String?): List<CourseDTO> {
+        val courses = name?.let {
+            courseRepository.findCoursesByName(name)
+        } ?: emptyList()
+
+        return courses.map {
+            CourseDTO(
+                id = it.id,
+                name = it.name,
+                category = it.category
+            )
+        }
+    }
 }

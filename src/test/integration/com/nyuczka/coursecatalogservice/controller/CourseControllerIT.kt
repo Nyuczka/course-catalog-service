@@ -7,11 +7,16 @@ import com.nyuczka.coursecatalogservice.util.courseEntityList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.util.UriComponentsBuilder
+import java.util.stream.Stream
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -59,6 +64,29 @@ class CourseControllerIT {
         assertEquals(3, coursesDTOs!!.size)
     }
 
+
+    @ParameterizedTest
+    @MethodSource("nameAndSize")
+    fun `should get all courses by name or return empty list`(name: String, size: Int) {
+        val uri = UriComponentsBuilder
+            .fromUriString("/v1/courses/")
+            .queryParam("name", name)
+            .toUriString()
+
+        webTestClient
+            .get()
+            .uri(uri)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.size()")
+            .isEqualTo(size)
+
+
+        //TODO: add maybe the check for the actual name containing expected one
+
+    }
+
     @Test
     fun `should update the course`() {
         val course = Course(
@@ -92,5 +120,16 @@ class CourseControllerIT {
 
         assertEquals(existingCourses.count(), 2)
 
+    }
+
+    companion object {
+        @JvmStatic
+        fun nameAndSize(): Stream<Arguments> {
+            return Stream.of(
+                Arguments.arguments("Spring", 2),
+                Arguments.arguments("Wiremock", 1),
+                Arguments.arguments("Zero", 0)
+            )
+        }
     }
 }

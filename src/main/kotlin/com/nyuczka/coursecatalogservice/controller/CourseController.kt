@@ -5,15 +5,7 @@ import com.nyuczka.coursecatalogservice.service.CourseService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/v1/courses")
@@ -30,6 +22,12 @@ class CourseController(val courseService: CourseService) {
     @ResponseStatus(HttpStatus.OK)
     fun getAllCourses(): List<CourseDTO> {
         return courseService.getAllCourses()
+    }
+
+    @GetMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    fun getCoursesByName(@RequestParam(required = false) name: String?): List<CourseDTO> {
+        return courseService.getCoursesByName(name)
     }
 
     @PutMapping
