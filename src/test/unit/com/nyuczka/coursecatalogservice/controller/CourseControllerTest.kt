@@ -50,6 +50,35 @@ class CourseControllerTest {
     }
 
     @Test
+    fun `should handle bean validation`() {
+        val course = CourseDTO(null, "", "")
+
+        every { courseService.createCourse(any()) } returns CourseDTO(1, "", "")
+
+        val response = mockMvc.perform(
+            post("/v1/courses", course)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(course))
+        )
+
+        response.andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `should handle runtime exception`() {
+
+        every { courseService.createCourse(any()) } throws RuntimeException("Unexpected error")
+
+        val response = mockMvc.perform(
+            post("/v1/courses", courseDTO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(courseDTO))
+        )
+
+        response.andExpect(status().isInternalServerError)
+    }
+
+    @Test
     fun `should get list of courses`() {
         every { courseService.getAllCourses() } returns listOf(courseDTO)
 

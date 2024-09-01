@@ -2,7 +2,9 @@ package com.nyuczka.coursecatalogservice.controller
 
 import com.nyuczka.coursecatalogservice.dto.CourseDTO
 import com.nyuczka.coursecatalogservice.service.CourseService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,11 +17,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1/courses")
+@Validated
 class CourseController(val courseService: CourseService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCourse(@RequestBody course: CourseDTO): CourseDTO {
+    fun createCourse(@RequestBody @Valid course: CourseDTO): CourseDTO {
         return courseService.createCourse(course)
     }
 
