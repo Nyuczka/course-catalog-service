@@ -3,7 +3,9 @@ package com.nyuczka.coursecatalogservice.controller
 import com.nyuczka.coursecatalogservice.dto.CourseDTO
 import com.nyuczka.coursecatalogservice.entity.Course
 import com.nyuczka.coursecatalogservice.repository.CourseRepository
+import com.nyuczka.coursecatalogservice.repository.InstructorRepository
 import com.nyuczka.coursecatalogservice.util.courseEntityList
+import com.nyuczka.coursecatalogservice.util.instructorEntity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,15 +31,23 @@ class CourseControllerIT {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
     @BeforeEach
     fun setUp() {
         courseRepository.deleteAll()
-        courseRepository.saveAll(courseEntityList())
+        instructorRepository.deleteAll()
+
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+        courseRepository.saveAll(courseEntityList(instructor))
     }
 
     @Test
     fun `should create a new course`() {
-        val courseDTO = CourseDTO(null, "Test Course", "Test Category")
+        val instructor = instructorRepository.findAll().first()
+        val courseDTO = CourseDTO(null, "Test Course", "Test Category", instructor.id)
 
         webTestClient.post()
             .uri("/v1/courses")
@@ -81,22 +91,19 @@ class CourseControllerIT {
             .expectBody()
             .jsonPath("$.size()")
             .isEqualTo(size)
-
-
-        //TODO: add maybe the check for the actual name containing expected one
-
     }
 
     @Test
     fun `should update the course`() {
+        val first = instructorRepository.findAll().first()
         val course = Course(
             null,
-            "Wiremock for Java Developers", "Development",
+            "Wiremock for Java Developers", "Development", first
         )
 
         val savedCourse = courseRepository.save(course)
 
-        val courseDTO = CourseDTO(null, "Wiremock for Java Developers", "Testing")
+        val courseDTO = CourseDTO(null, "Wiremock for Java Developers", "Testing", course.instructor!!.id)
 
         webTestClient.put()
             .uri("/v1/courses/${savedCourse.id}")

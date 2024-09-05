@@ -27,7 +27,7 @@ class CourseControllerTest {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
-    private val courseDTO = CourseDTO(1, "New Course", "Development")
+    private val courseDTO = CourseDTO(1, "New Course", "Development", 1)
 
 
     @Test

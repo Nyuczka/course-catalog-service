@@ -4,6 +4,7 @@ import com.nyuczka.coursecatalogservice.dto.InstructorDTO
 import com.nyuczka.coursecatalogservice.entity.Instructor
 import com.nyuczka.coursecatalogservice.repository.InstructorRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class InstructorService(val instructorRepository: InstructorRepository) {
@@ -22,6 +23,10 @@ class InstructorService(val instructorRepository: InstructorRepository) {
                 name = it.name
             )
         }
+    }
+
+    fun findInstructorById(instructorId: Int): Optional<Instructor> {
+        return instructorRepository.findById(instructorId)
     }
 
 }
