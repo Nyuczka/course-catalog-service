@@ -52,7 +52,8 @@ class CourseService(
             CourseDTO(
                 id = it.id,
                 name = it.name,
-                category = it.category
+                category = it.category,
+                instructorId = it.instructor?.id
             )
         }
     }
@@ -97,7 +98,8 @@ class CourseService(
             CourseDTO(
                 id = it.id,
                 name = it.name,
-                category = it.category
+                category = it.category,
+                instructorId = it.instructor?.id
             )
         }
     }
