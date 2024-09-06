@@ -4,6 +4,7 @@ import com.nyuczka.coursecatalogservice.dto.CourseDTO
 import com.nyuczka.coursecatalogservice.entity.Course
 import com.nyuczka.coursecatalogservice.repository.CourseRepository
 import com.nyuczka.coursecatalogservice.repository.InstructorRepository
+import com.nyuczka.coursecatalogservice.util.PostgreSQLContainerInitializer
 import com.nyuczka.coursecatalogservice.util.courseEntityList
 import com.nyuczka.coursecatalogservice.util.instructorEntity
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -23,7 +25,8 @@ import java.util.stream.Stream
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
-class CourseControllerIT {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class CourseControllerIT : PostgreSQLContainerInitializer() {
 
     @Autowired
     lateinit var webTestClient: WebTestClient
@@ -33,6 +36,17 @@ class CourseControllerIT {
 
     @Autowired
     lateinit var instructorRepository: InstructorRepository
+
+    companion object {
+        @JvmStatic
+        fun nameAndSize(): Stream<Arguments> {
+            return Stream.of(
+                Arguments.arguments("Spring", 2),
+                Arguments.arguments("Wiremock", 1),
+                Arguments.arguments("Zero", 0)
+            )
+        }
+    }
 
     @BeforeEach
     fun setUp() {
@@ -127,16 +141,5 @@ class CourseControllerIT {
 
         assertEquals(existingCourses.count(), 2)
 
-    }
-
-    companion object {
-        @JvmStatic
-        fun nameAndSize(): Stream<Arguments> {
-            return Stream.of(
-                Arguments.arguments("Spring", 2),
-                Arguments.arguments("Wiremock", 1),
-                Arguments.arguments("Zero", 0)
-            )
-        }
     }
 }

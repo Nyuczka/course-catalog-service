@@ -2,6 +2,7 @@ package com.nyuczka.coursecatalogservice.controller
 
 import com.nyuczka.coursecatalogservice.dto.InstructorDTO
 import com.nyuczka.coursecatalogservice.repository.InstructorRepository
+import com.nyuczka.coursecatalogservice.util.PostgreSQLContainerInitializer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,14 +14,13 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
-class InstructorControllerIT {
+class InstructorControllerIT : PostgreSQLContainerInitializer(){
 
     @Autowired
     lateinit var webTestClient: WebTestClient
 
     @Autowired
     lateinit var instructorRepository: InstructorRepository
-
 
     @BeforeEach
     fun setUp() {
