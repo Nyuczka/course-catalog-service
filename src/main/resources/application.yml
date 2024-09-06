@@ -2,15 +2,29 @@ spring:
   application:
     name: course-catalog-service
   datasource:
-    url: jdbc:h2:mem:test-db
-    driver-class-name: org.h2.Driver
-    username: admin
-    password: password
+    url: jdbc:postgresql://localhost:5438/courses
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+#    url: jdbc:h2:mem:test-db
+#    driver-class-name: org.h2.Driver
+#    username: admin
+#    password: password
+
   jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
+#    database: h2
+#    database-platform: org.hibernate.dialect.H2Dialect
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
     show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
   h2:
     console:
       enabled: true
