@@ -8,6 +8,7 @@ plugins {
 
 group = "com.nyuczka"
 version = "0.0.1-SNAPSHOT"
+extra["testcontainersVersion"] = "1.16.2"
 
 java {
     toolchain {
@@ -18,6 +19,15 @@ java {
 repositories {
     mavenCentral()
 }
+
+dependencyManagement {
+    imports {
+        mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+    }
+}
+
+
+
 
 dependencies {
     // Spring
@@ -43,6 +53,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("io.mockk:mockk")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
+
+    // Test containers
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
 }
 
 kotlin {
